@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AppUser {
+public class Mechanic {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,4 @@ public class AppUser {
     @Column(nullable = false)
     private String password;
 
-    
-    
-    
 }

@@ -12,7 +12,7 @@
 	<artifactId>mechanics</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>mechanics</name>
-	<description>backend service for the &quot;fix-my-ride&quot; web app (handles mechanics and appointments management)</description>
+	<description>backend service for the &quot;fix-my-ride&quot; web app (handles mechanics management)</description>
 	<url/>
 	<licenses>
 		<license/>

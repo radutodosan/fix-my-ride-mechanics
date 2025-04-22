@@ -1,6 +1,6 @@
 package com.radutodosan.mechanics.config;
 
-import com.radutodosan.mechanics.repositories.AppUserRepository;
+import com.radutodosan.mechanics.repositories.MechanicRepository;
 import com.radutodosan.mechanics.security.JwtAuthFilter;
 import com.radutodosan.mechanics.utils.JwtUtil;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/mechanics/details/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -50,7 +51,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(AppUserRepository repo) {
+    public UserDetailsService userDetailsService(MechanicRepository repo) {
         return username -> repo.findByUsername(username)
                 .map(user -> new org.springframework.security.core.userdetails.User(
                         user.getUsername(),

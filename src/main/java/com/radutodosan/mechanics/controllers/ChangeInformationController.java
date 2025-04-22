@@ -2,8 +2,8 @@ package com.radutodosan.mechanics.controllers;
 
 import com.radutodosan.mechanics.dtos.ChangeEmailRequestDTO;
 import com.radutodosan.mechanics.dtos.ChangePasswordRequestDTO;
-import com.radutodosan.mechanics.entities.AppUser;
-import com.radutodosan.mechanics.repositories.AppUserRepository;
+import com.radutodosan.mechanics.entities.Mechanic;
+import com.radutodosan.mechanics.repositories.MechanicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/change-info")
+@RequestMapping("mechanics/change-info")
 @RequiredArgsConstructor
 public class ChangeInformationController {
 
-    private final AppUserRepository appUserRepository;
+    private final MechanicRepository mechanicRepository;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequestDTO request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        AppUser user = appUserRepository.findByUsername(username).orElseThrow(() ->
+        Mechanic user = mechanicRepository.findByUsername(username).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -33,14 +33,14 @@ public class ChangeInformationController {
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        appUserRepository.save(user);
+        mechanicRepository.save(user);
         return ResponseEntity.ok("Password changed successfully");
     }
 
     @PostMapping("/change-email")
     public ResponseEntity<?> changeEmail(@RequestBody ChangeEmailRequestDTO request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        AppUser user = appUserRepository.findByUsername(username).orElseThrow(() ->
+        Mechanic user = mechanicRepository.findByUsername(username).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
 
         // check if password matches
@@ -49,12 +49,12 @@ public class ChangeInformationController {
         }
 
         // check if email is already used
-        if (appUserRepository.existsByEmail(request.getNewEmail())) {
+        if (mechanicRepository.existsByEmail(request.getNewEmail())) {
             return ResponseEntity.badRequest().body("Email already in use");
         }
 
         user.setEmail(request.getNewEmail());
-        appUserRepository.save(user);
+        mechanicRepository.save(user);
         return ResponseEntity.ok("Email changed successfully");
     }
 

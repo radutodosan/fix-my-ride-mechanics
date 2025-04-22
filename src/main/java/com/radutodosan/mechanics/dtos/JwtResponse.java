@@ -1,5 +1,6 @@
 package com.radutodosan.mechanics.dtos;
 
+import com.radutodosan.mechanics.entities.Mechanic;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,6 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class JwtResponse {
     private String token;
-    private String username;
-    private String email;
+    private Mechanic mechanic;
 }
