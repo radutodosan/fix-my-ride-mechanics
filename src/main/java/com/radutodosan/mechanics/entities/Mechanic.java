@@ -22,6 +22,8 @@ public class Mechanic {
     @Column(nullable = false, unique = true)
     private String email;
 
+    private String pictureUrl;
+
     @Column(nullable = false)
     private String password;
 

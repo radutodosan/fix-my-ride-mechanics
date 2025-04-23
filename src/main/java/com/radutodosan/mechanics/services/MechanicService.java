@@ -32,6 +32,7 @@ public class MechanicService {
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                .pictureUrl("https://robohash.org/" + signUpRequest.getUsername() + ".png")
                 .build();
 
         mechanicRepository.save(user);
