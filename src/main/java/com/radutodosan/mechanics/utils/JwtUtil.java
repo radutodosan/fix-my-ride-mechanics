@@ -22,6 +22,9 @@ public class JwtUtil {
     @Value("${security.jwt.refresh-token-expiration-time}")
     private long refreshTokenExpirationTime;
 
+    @Value("${app.environment}")
+    private String appEnvironment;
+
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
@@ -77,9 +80,19 @@ public class JwtUtil {
         String refreshToken = generateRefreshToken(username);
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
-                .secure(true) // true if HTTPS
+                .secure(appEnvironment.equals("prod")) // change at deploy
                 .path("/auth/refresh-token")
                 .maxAge(Duration.ofDays(7))
+                .sameSite("Strict")
+                .build();
+    }
+
+    public ResponseCookie deleteResponseCookie() {
+        return ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(appEnvironment.equals("prod")) // change at deploy
+                .path("/auth/refresh-token")
+                .maxAge(0) // ⚡️ Expiră imediat
                 .sameSite("Strict")
                 .build();
     }

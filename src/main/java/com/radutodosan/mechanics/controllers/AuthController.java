@@ -115,16 +115,8 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<ApiResponseDTO<?>> logout(HttpServletResponse response) {
-        // 🧹 Creăm un Cookie de refreshToken golit
-        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
-                .httpOnly(true)
-                .secure(true) // true dacă ai HTTPS
-                .path("/auth/refresh-token")
-                .maxAge(0) // ⚡️ Expiră imediat
-                .sameSite("Strict")
-                .build();
+        ResponseCookie deleteCookie = jwtUtil.deleteResponseCookie();
 
-        // 📨 Adăugăm în header pentru a forța browserul să șteargă cookie-ul
         response.addHeader(HttpHeaders.SET_COOKIE, deleteCookie.toString());
 
         return ResponseEntity.ok(new ApiResponseDTO<>(true, "Logged out successfully", null));
