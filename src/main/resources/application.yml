@@ -24,7 +24,8 @@ spring:
 security:
   jwt:
     secret-key: ${JWT_SECRET_KEY}
-    expiration-time: 3600000
+    access-token-expiration-time:  120000 # 2 minutes (in milliseconds) (900000 for 15 minutes)
+    refresh-token-expiration-time: 604800000 # 7 days (in milliseconds)
 
 
 spring.config.import: optional:file:.env[.properties]

@@ -4,12 +4,17 @@ import com.radutodosan.mechanics.dtos.*;
 import com.radutodosan.mechanics.entities.Mechanic;
 import com.radutodosan.mechanics.services.MechanicService;
 import com.radutodosan.mechanics.utils.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth/mechanics")
@@ -32,11 +37,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseDTO<JwtResponse>> login(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<ApiResponseDTO<JwtResponse>> login(@RequestBody LoginRequestDTO loginRequest, HttpServletResponse response) {
         try {
-            Mechanic mechanic = mechanicService.authenticate(request);
-            String token = jwtUtil.generateToken(mechanic.getUsername());
-            JwtResponse jwtResponse = new JwtResponse(token, mechanic);
+            Mechanic mechanic = mechanicService.authenticate(loginRequest);
+
+            String accessToken = jwtUtil.generateAccessToken(mechanic.getUsername());
+            ResponseCookie responseCookie = jwtUtil.generateResponseCookie(mechanic.getUsername());
+
+            response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
+
+            JwtResponse jwtResponse = new JwtResponse(accessToken, mechanic);
             return ResponseEntity.ok(new ApiResponseDTO<>(true, "Login successful", jwtResponse));
         } catch (RuntimeException e) {
             return ResponseEntity
@@ -78,5 +88,30 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponseDTO<Map<String, String>>> refreshAccessToken(
+            @CookieValue(name = "refreshToken", required = false) String refreshToken) {
+
+        if (refreshToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponseDTO<>(false, "Refresh token missing", null));
+        }
+
+        if (!jwtUtil.validateToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponseDTO<>(false, "Invalid or expired refresh token", null));
+        }
+
+        String username = jwtUtil.extractUsername(refreshToken);
+        String newAccessToken = jwtUtil.generateAccessToken(username);
+
+        Map<String, String> tokenData = Map.of(
+                "accessToken", newAccessToken
+        );
+
+        return ResponseEntity.ok(new ApiResponseDTO<>(true, "Access token refreshed successfully", tokenData));
+    }
+
 
 }
