@@ -1,5 +1,6 @@
 package com.radutodosan.mechanics.controllers;
 
+import com.radutodosan.mechanics.dtos.ApiResponseDTO;
 import com.radutodosan.mechanics.dtos.ChangeEmailRequestDTO;
 import com.radutodosan.mechanics.dtos.ChangePasswordRequestDTO;
 import com.radutodosan.mechanics.entities.Mechanic;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("mechanics/change-info")
+@RequestMapping("mechanics/details")
 @RequiredArgsConstructor
 public class ChangeInformationController {
 
@@ -25,37 +26,42 @@ public class ChangeInformationController {
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequestDTO request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Mechanic user = mechanicRepository.findByUsername(username).orElseThrow(() ->
-                new UsernameNotFoundException("User not found"));
+        Mechanic client = mechanicRepository.findByUsername(username).orElseThrow(() ->
+                new UsernameNotFoundException("Client not found"));
 
-        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            return ResponseEntity.badRequest().body("Current password is incorrect");
+        if (!passwordEncoder.matches(request.getCurrentPassword(), client.getPassword())) {
+            ApiResponseDTO<?> error = new ApiResponseDTO<>(false, "Current password is incorrect", null);
+            return ResponseEntity.badRequest().body(error);
         }
 
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        mechanicRepository.save(user);
-        return ResponseEntity.ok("Password changed successfully");
+        client.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        mechanicRepository.save(client);
+
+        ApiResponseDTO<String> success = new ApiResponseDTO<>(true, "Password changed successfully", null);
+        return ResponseEntity.ok(success);
     }
 
     @PostMapping("/change-email")
     public ResponseEntity<?> changeEmail(@RequestBody ChangeEmailRequestDTO request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Mechanic user = mechanicRepository.findByUsername(username).orElseThrow(() ->
-                new UsernameNotFoundException("User not found"));
+        Mechanic client = mechanicRepository.findByUsername(username).orElseThrow(() ->
+                new UsernameNotFoundException("Client not found"));
 
-        // check if password matches
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.badRequest().body("Password is incorrect");
+        if (!passwordEncoder.matches(request.getPassword(), client.getPassword())) {
+            ApiResponseDTO<?> error = new ApiResponseDTO<>(false, "Password is incorrect", null);
+            return ResponseEntity.badRequest().body(error);
         }
 
-        // check if email is already used
         if (mechanicRepository.existsByEmail(request.getNewEmail())) {
-            return ResponseEntity.badRequest().body("Email already in use");
+            ApiResponseDTO<?> error = new ApiResponseDTO<>(false, "Email already in use", null);
+            return ResponseEntity.badRequest().body(error);
         }
 
-        user.setEmail(request.getNewEmail());
-        mechanicRepository.save(user);
-        return ResponseEntity.ok("Email changed successfully");
+        client.setEmail(request.getNewEmail());
+        mechanicRepository.save(client);
+
+        ApiResponseDTO<String> success = new ApiResponseDTO<>(true, "Email changed successfully", null);
+        return ResponseEntity.ok(success);
     }
 
 }
