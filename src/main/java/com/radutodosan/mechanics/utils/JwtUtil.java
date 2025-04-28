@@ -81,7 +81,7 @@ public class JwtUtil {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(!activeProfile.equals("dev")) // change at deploy
-                .path("/auth/refresh-token")
+                .path("/auth/mechanics/refresh-token")
                 .maxAge(Duration.ofDays(7))
                 .sameSite("Strict")
                 .build();
@@ -91,8 +91,8 @@ public class JwtUtil {
         return ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(!activeProfile.equals("dev")) // change at deploy
-                .path("/auth/refresh-token")
-                .maxAge(0) // ⚡️ Expiră imediat
+                .path("/auth/mechanics/refresh-token")
+                .maxAge(0)
                 .sameSite("Strict")
                 .build();
     }
