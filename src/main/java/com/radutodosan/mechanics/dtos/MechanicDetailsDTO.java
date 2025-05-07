@@ -12,4 +12,5 @@ import lombok.*;
 public class MechanicDetailsDTO {
     private String username;
     private String email;
+    private String pictureUrl;
 }

@@ -39,7 +39,7 @@ public class MechanicValidationController {
     public ResponseEntity<?> getAllMechanics() {
         List<Mechanic> mechanics = mechanicRepository.findAll();
         List<MechanicDetailsDTO> mechanicDetails = mechanics.stream()
-                .map(mechanic -> new MechanicDetailsDTO(mechanic.getUsername(), mechanic.getEmail()))
+                .map(mechanic -> new MechanicDetailsDTO(mechanic.getUsername(), mechanic.getEmail(), mechanic.getPictureUrl()))
                 .toList();
 
         ApiResponseDTO<List<MechanicDetailsDTO>> response = new ApiResponseDTO<>(

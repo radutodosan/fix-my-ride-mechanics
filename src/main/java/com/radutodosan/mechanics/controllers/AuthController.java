@@ -72,6 +72,7 @@ public class AuthController {
             MechanicDetailsDTO mechanicDetails = MechanicDetailsDTO.builder()
                     .username(mechanic.getUsername())
                     .email(mechanic.getEmail())
+                    .pictureUrl(mechanic.getPictureUrl())
                     .build();
             ApiResponseDTO<?> response = new ApiResponseDTO<>(
                     true,
