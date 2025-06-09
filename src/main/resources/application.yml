@@ -22,7 +22,7 @@ spring:
       enabled: false
 
   profiles:
-    active: prod
+    active: dev
 
 security:
   jwt:

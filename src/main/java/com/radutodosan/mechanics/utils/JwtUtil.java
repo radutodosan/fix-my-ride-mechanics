@@ -80,7 +80,7 @@ public class JwtUtil {
         String refreshToken = generateRefreshToken(username);
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
-                .secure(!activeProfile.equals("dev")) // change at deploy
+                .secure(!activeProfile.equals("dev"))
                 .path("/mechanics")
                 .maxAge(Duration.ofDays(7))
                 .sameSite("Strict")
@@ -90,7 +90,7 @@ public class JwtUtil {
     public ResponseCookie deleteResponseCookie() {
         return ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
-                .secure(!activeProfile.equals("dev")) // change at deploy
+                .secure(!activeProfile.equals("dev"))
                 .path("/mechanics")
                 .maxAge(0)
                 .sameSite("Strict")
