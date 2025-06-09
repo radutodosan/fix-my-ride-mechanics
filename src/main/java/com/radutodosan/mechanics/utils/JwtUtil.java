@@ -81,7 +81,7 @@ public class JwtUtil {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(!activeProfile.equals("dev")) // change at deploy
-                .path("/auth/mechanics/refresh-token")
+                .path("/mechanics")
                 .maxAge(Duration.ofDays(7))
                 .sameSite("Strict")
                 .build();
@@ -91,7 +91,7 @@ public class JwtUtil {
         return ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(!activeProfile.equals("dev")) // change at deploy
-                .path("/auth/mechanics/refresh-token")
+                .path("/mechanics")
                 .maxAge(0)
                 .sameSite("Strict")
                 .build();

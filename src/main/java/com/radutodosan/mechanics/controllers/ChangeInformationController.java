@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("mechanics/details")
+@RequestMapping("details")
 @RequiredArgsConstructor
 public class ChangeInformationController {
 
